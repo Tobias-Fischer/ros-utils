@@ -36,6 +36,8 @@ find_package(Eigen3 REQUIRED)
 
 find_package(urdfdom_headers REQUIRED)
 
+find_package(Iconv REQUIRED)
+
 # Require https://github.com/ros/filters/pull/60 in the filters package (added in 1.8.3 and 1.9.2)
 #catkin_lint: ignore_once duplicate_find
 find_package(filters QUIET)
@@ -228,12 +230,12 @@ add_library(cras_tf2_utils
 target_sources(cras_tf2_utils INTERFACE $<BUILD_INTERFACE:${CCC_INCLUDE_BASE}/tf2_utils/message_filter.hpp>)
 add_dependencies(cras_tf2_utils ${catkin_EXPORTED_TARGETS})
 target_link_libraries(cras_tf2_utils
-  PUBLIC cras_log_utils cras_thread_utils cras_time_utils ${catkin_LIBRARIES})
+  PUBLIC cras_log_utils cras_thread_utils cras_time_utils cras_semaphore ${catkin_LIBRARIES})
 
 add_library(cras_string_utils src/string_utils.cpp src/string_utils/from_chars.cpp src/string_utils/ros.cpp)
 add_dependencies(cras_string_utils ${catkin_EXPORTED_TARGETS})
 target_link_libraries(cras_string_utils
-  PUBLIC cras_time_utils cras_type_traits ${catkin_LIBRARIES})
+  PUBLIC cras_time_utils cras_type_traits ${catkin_LIBRARIES} Iconv::Iconv)
 if (HAS_FROM_CHARS_FLOAT)
   target_compile_definitions(cras_string_utils PRIVATE HAS_FROM_CHARS_FLOAT=1)
 endif()
